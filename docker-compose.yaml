@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # WAHA - WhatsApp HTTP API
   waha:
@@ -9,14 +7,14 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - WAHA_API_KEY=admin
-      - WAHA_API_HOSTNAME=0.0.0.0
+      - WAHA_API_KEY=${WAHA_API_KEY}
+      - WAHA_API_HOSTNAME=${WAHA_API_HOSTNAME}
     volumes:
       - waha_data:/app/.waha
     networks:
       - pedidoia-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -30,14 +28,14 @@ services:
       - "5678:5678"
     environment:
       - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=pedidoia2024
-      - N8N_HOST=0.0.0.0
-      - N8N_PORT=5678
-      - N8N_PROTOCOL=http
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=${N8N_PORT}
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
       - NODE_ENV=production
-      - WEBHOOK_URL=http://n8n:5678/
-      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
     volumes:
       - n8n_data:/home/node/.n8n
     networks:
@@ -45,7 +43,7 @@ services:
     depends_on:
       - waha
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5678/healthz"]
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:5678/healthz" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -56,15 +54,15 @@ services:
     container_name: pedidoia-postgres
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=pedidoia
-      - POSTGRES_PASSWORD=pedidoia_db_2024
-      - POSTGRES_DB=pedidoia
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - pedidoia-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U pedidoia"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -80,7 +78,7 @@ services:
     networks:
       - pedidoia-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
