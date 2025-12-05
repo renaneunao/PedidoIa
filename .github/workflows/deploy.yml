@@ -89,12 +89,15 @@ jobs:
           
           # Copiar arquivos
           scp -o StrictHostKeyChecking=no docker-compose.yaml $VPS_USER@$VPS_HOST:/opt/pedidoia/docker-compose.yaml
-          scp -o StrictHostKeyChecking=no .env.example $VPS_USER@$VPS_HOST:/opt/pedidoia/.env
+          scp -o StrictHostKeyChecking=no .env.example $VPS_USER@$VPS_HOST:/opt/pedidoia/.env.example
           
           # Executar deploy
           ssh $VPS_USER@$VPS_HOST "
             set -e
             cd /opt/pedidoia
+            
+            # Criar .env a partir do exemplo APENAS se não existir (não sobrescreve produção)
+            cp -n .env.example .env || true
             
             # Login no Docker Hub
             echo '${{ secrets.DOCKER_TOKEN }}' | docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
