@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # WAHA - WhatsApp HTTP API
+  waha:
+    image: devlikeapro/waha
+    container_name: pedidoia-waha
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - WAHA_API_KEY=admin
+      - WAHA_API_HOSTNAME=0.0.0.0
+    volumes:
+      - waha_data:/app/.waha
+    networks:
+      - pedidoia-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # n8n - Workflow Automation
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: pedidoia-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=pedidoia2024
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://n8n:5678/
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - pedidoia-network
+    depends_on:
+      - waha
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL - Banco de dados para armazenar pedidos
+  postgres:
+    image: postgres:15-alpine
+    container_name: pedidoia-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=pedidoia
+      - POSTGRES_PASSWORD=pedidoia_db_2024
+      - POSTGRES_DB=pedidoia
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pedidoia-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pedidoia"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis - Cache e filas
+  redis:
+    image: redis:7-alpine
+    container_name: pedidoia-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - pedidoia-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  waha_data:
+    driver: local
+  n8n_data:
+    driver: local
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  pedidoia-network:
+    driver: bridge

@@ -1,0 +1,58 @@
+# Dependências
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+*.env
+
+# Logs
+logs/
+*.log
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Arquivos temporários
+tmp/
+temp/
+*.tmp
+
+# Build
+dist/
+build/
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Banco de dados
+*.db
+*.sqlite
+*.sqlite3
+
+# Arquivos de configuração sensíveis
+config/secrets.json
+secrets/
+
+# Arquivos do N8N
+.n8n/
+
+# Arquivos do Waha
+waha-data/
+

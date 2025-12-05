@@ -1,0 +1,45 @@
+{
+  "name": "pedidoia",
+  "version": "1.0.0",
+  "description": "Sistema inteligente de atendimento de pedidos de delivery utilizando LLM, integrado com Waha (WhatsApp API) e N8N",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker:build": "docker build -t pedidoia .",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "deploy:setup": "bash scripts/setup-vps.sh",
+    "deploy": "bash scripts/deploy.sh"
+  },
+  "keywords": [
+    "whatsapp",
+    "delivery",
+    "ai",
+    "llm",
+    "automation",
+    "n8n",
+    "waha"
+  ],
+  "authors": [
+    "Antonio",
+    "Renan"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.2",
+    "pg": "^8.11.3",
+    "redis": "^4.6.11"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
