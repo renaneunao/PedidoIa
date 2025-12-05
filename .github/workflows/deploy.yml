@@ -84,7 +84,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
         run: |
-          ssh $VPS_USER@$VPS_HOST << 'ENDSSH'
+          ssh $VPS_USER@$VPS_HOST "
             set -e
             
             # Criar diretório do projeto se não existir
@@ -92,7 +92,7 @@ jobs:
             cd /opt/pedidoia
             
             # Login no Docker Hub
-            echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            echo '${{ secrets.DOCKER_TOKEN }}' | docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
             
             # Fazer pull das imagens atualizadas
             docker compose pull
@@ -109,8 +109,8 @@ jobs:
             # Verificar status
             docker compose ps
             
-            echo "✅ Deploy concluído com sucesso!"
-          ENDSSH
+            echo '✅ Deploy concluído com sucesso!'
+          "
 
       - name: Verify deployment
         env:
