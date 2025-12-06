@@ -15,6 +15,7 @@ services:
       - WHATSAPP_SWAGGER_PASSWORD=${WAHA_DASHBOARD_PASSWORD}
     volumes:
       - waha_data:/app/.waha
+      - waha_sessions:/app/.sessions
     networks:
       - pedidoia-network
     healthcheck:
@@ -90,6 +91,8 @@ services:
 
 volumes:
   waha_data:
+    driver: local
+  waha_sessions:
     driver: local
   n8n_data:
     driver: local
